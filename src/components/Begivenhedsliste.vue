@@ -1,39 +1,14 @@
 <template>
-	<!--<div class="container">
-		<div class="år" v-for="(år, årIndex) in Object.keys(begivenheder)" :key="årIndex">
-			<div class="måned-container" v-for="måned in Object.keys(begivenheder[år])" :key="måned">
-
-				<div class="måned">{{ måned }} {{ år }}</div>
-				<div class="begivenhed-container" v-for="(begivenhed, eventIndex) in begivenheder[år][måned]" :key="eventIndex">
-					<div class="dag">
-						{{ getDate(begivenhed.start_time) }}
-					</div>
-					<div class="begivenhed">
-	
-						<a :href="`https://www.facebook.com/events/${begivenhed.id}`" target="_blank">{{ begivenhed.name }} </a>
-					</div>
-				</div>
-			</div>
-		</div>-->
-	<!--<div
-			class="element"
-			v-for="(element, index) in testData"
-			:key="index"
-			:style="`margin-left: ${calcPadding(index)}px`"
-		>
-			{{ element }}
-		</div>-->
-	<!--</div>-->
-	<div class="container">
+	<div v-if="begivenhederArray.length" class="begivenhedsliste">
 		<div v-for="(element, index) in begivenhederArray" :key="index">
-			<div class="begivenhed" v-if="element.name" :style="`margin-left: ${udregnPadding(index)}`">
-				<div class="seperator">________</div>
-				<div class="dag-begivenhed-container">
+			<div class="begivenhed" v-if="element.name" :style="`padding-left: ${udregnPadding(index)}`">
+				<div class="skillelinje">________</div>
+				<div class="dag-begivenhed">
 					<div class="dag">{{ getDate(element.start_time) }}</div>
 					<a :href="`https://www.facebook.com/events/${element.id}`" target="_blank">{{ element.name }} </a>
 				</div>
 			</div>
-			<div class="måned-år-container" v-else :style="`margin-left: ${udregnPadding(index)}`">
+			<div class="måned-år" v-else :style="`margin-left: ${udregnPadding(index)}`">
 				<div class="måned">{{ element.måned }}</div>
 				<div class="år">{{ element.år }}</div>
 			</div>
@@ -67,7 +42,24 @@
 				return date;
 			},
 			udregnPadding(index) {
-				return -(index * 8.2) + "%";
+				let konstantPadding = 1;
+				//trekantens højde
+				let højde = 167.7;
+
+				let afstand = 6;
+				let nyhøjde = højde - afstand * index;
+
+				if (nyhøjde < 0) {
+					return konstantPadding + "vw";
+				}
+
+				let grader = 18.55;
+				var radian = (grader * Math.PI) / 180;
+				let hypo = nyhøjde / Math.cos(radian);
+
+				let nybredde = Math.sqrt(Math.pow(hypo, 2) - Math.pow(nyhøjde, 2));
+
+				return konstantPadding + nybredde + "vw";
 			},
 		},
 	};
@@ -80,15 +72,18 @@
 	a {
 		text-decoration: none;
 	}
-	.container {
-		z-index: 99;
-		margin-left: 4vw;
-		height: 200 vh;
+	.begivenhedsliste {
+		margin-top: -2vw;
+		padding-bottom: 10vw;
+		width: 45vw;
+		z-index: 98;
+		position: absolute;
 	}
-	.måned-år-container {
-		display: flex;
-		padding-top: 10%;
+	.måned-år {
 		letter-spacing: 0.2vw;
+		height: 6vw;
+		display: flex;
+		align-items: flex-end;
 	}
 	.måned {
 		font-family: "BebasNeuePro";
@@ -100,25 +95,34 @@
 		font-family: "BebasNeueProLight";
 		font-size: 2.5vw;
 	}
-	.dag-begivenhed-container {
+	.dag-begivenhed {
 		display: flex;
 		align-items: center;
+		width: 40vw;
 	}
 	.dag {
 		font-family: "BebasNeuePro";
 		font-size: 2.5vw;
-		padding-right: 8%;
+		padding-right: 2vw;
+		padding-bottom: 0.2vw;
+		display: flex;
+		align-items: center;
 	}
 	.begivenhed {
 		font-family: "BebasNeueProLight";
 		font-size: 2vw;
 		font-weight: 500;
+		height: 6vw;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
 	}
-	.seperator {
+	.skillelinje {
 		color: rgb(125, 124, 122);
 		user-select: none;
-		padding-bottom: 3vh;
-		padding-left: 15%;
-		height: 2%;
+		display: flex;
+		align-items: center;
+		padding-left: 5vw;
+		padding-bottom: 1vw;
 	}
 </style>
